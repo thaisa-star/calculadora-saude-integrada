@@ -173,7 +173,6 @@
             <span id="toggle-icon" class="text-sm font-bold text-slate-400">+</span>
           </button>
 
-          <!-- CONTEÚDO OCULTO POR PADRÃO -->
           <div id="wrapper-investimento" class="hidden mt-4 space-y-2 p-4 bg-purple-50/50 rounded-xl border border-purple-100">
             <label class="text-slate-700 text-sm font-semibold flex items-center gap-2">
               Investimento Mensal na Proposta SESI (R$)
@@ -197,10 +196,10 @@
             Custo Estimado do Absenteísmo
           </span>
           <div id="res-custo-ano" class="text-3xl font-black text-red-600">
-            R$ 0
+            R$ 0 / ano
           </div>
           <div id="res-custo-detalhe" class="text-sm font-semibold text-slate-500 mt-1">
-            R$ 0 / ano (R$ 0 / mês)
+            Equivalente a R$ 0 / mês
           </div>
         </div>
 
@@ -211,20 +210,19 @@
               Economia Potencial Com Soluções SESI
             </span>
             <div id="res-economia-ano" class="text-3xl font-black text-sesi-green">
-              R$ 0
+              R$ 0 / ano
             </div>
             <div id="res-economia-detalhe" class="text-sm font-semibold text-slate-500 mt-1">
-              R$ 0 / ano (R$ 0 / mês)
+              Equivalente a R$ 0 / mês
             </div>
           </div>
 
           <!-- BANNER DE STATUS DO INVESTIMENTO -->
           <div id="banner-roi" class="p-4 rounded-xl text-sm flex items-start gap-3 border transition-all bg-emerald-50 border-emerald-200 text-emerald-900">
-            <svg id="icon-roi-ok" class="w-5 h-5 text-sesi-green shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <svg id="icon-roi-alert" class="w-5 h-5 text-amber-500 shrink-0 mt-0.5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            <svg id="roi-icon" class="w-5 h-5 text-sesi-green shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <div>
-              <span id="title-roi" class="font-bold block text-slate-800">A economia gerada supera a proposta SESI</span>
-              <p id="desc-roi" class="text-xs mt-0.5 text-slate-600">A economia gerada pela redução do absenteísmo supera o investimento no programa.</p>
+              <span id="roi-title" class="font-bold block text-slate-800">A economia gerada supera a proposta SESI</span>
+              <p id="roi-desc" class="text-xs mt-0.5 text-slate-600">O retorno obtido com a redução do absenteísmo supera o investimento no programa.</p>
             </div>
           </div>
         </div>
@@ -283,7 +281,7 @@
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-5 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-          <svg class="w-5 h-5 text-sesi-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+          <svg class="w-5 h-5 text-sesi-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
           Memória de Cálculo
         </h3>
         <button id="btn-close-modal" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100">
@@ -398,8 +396,8 @@
         const jornadaSemanal = Math.max(1, parseFloat(document.getElementById('num-jornada').value) || 0);
         const absentRate = (Math.max(0, parseFloat(document.getElementById('num-absent').value) || 0)) / 100;
         const reducaoRate = (Math.max(0, parseFloat(document.getElementById('num-reducao').value) || 0)) / 100;
-        const investimentoMensal = Math.max(0, parseFloat(document.getElementById('num-investimento').value) || 0);
-        const investimentoAno = investimentoMensal * 12;
+        const investimentoMes = Math.max(0, parseFloat(document.getElementById('num-investimento').value) || 0);
+        const investimentoAno = investimentoMes * 12;
 
         // Horas e Capacidade
         const cargaMensal = jornadaSemanal * 5;
@@ -422,48 +420,30 @@
         const economiaMes = economiaAno / 12;
 
         // Exibir resultados financeiros no DOM
-        document.getElementById('res-custo-ano').innerText = formatBRL(custoPerdaAno);
-        document.getElementById('res-custo-detalhe').innerText = `${formatBRL(custoPerdaAno)} / ano (${formatBRL(custoPerdaMes)} / mês)`;
+        document.getElementById('res-custo-ano').innerText = `${formatBRL(custoPerdaAno)} / ano`;
+        document.getElementById('res-custo-detalhe').innerText = `Equivalente a ${formatBRL(custoPerdaMes)} / mês`;
 
-        document.getElementById('res-economia-ano').innerText = formatBRL(economiaAno);
-        document.getElementById('res-economia-detalhe').innerText = `${formatBRL(economiaAno)} / ano (${formatBRL(economiaMes)} / mês)`;
+        document.getElementById('res-economia-ano').innerText = `${formatBRL(economiaAno)} / ano`;
+        document.getElementById('res-economia-detalhe').innerText = `Equivalente a ${formatBRL(economiaMes)} / mês`;
+
+        // LÓGICA DO BANNER DE RETORNO DO INVESTIMENTO (SEM MENCIONAR SALDO RESTANTE)
+        const bannerRoi = document.getElementById('banner-roi');
+        const roiTitle = document.getElementById('roi-title');
+        const roiDesc = document.getElementById('roi-desc');
+
+        if (investimentoMes === 0 || economiaAno >= investimentoAno) {
+          bannerRoi.className = "p-4 rounded-xl text-sm flex items-start gap-3 border transition-all bg-emerald-50 border-emerald-200 text-emerald-900";
+          roiTitle.innerText = "A economia gerada supera a proposta SESI";
+          roiDesc.innerText = "O retorno obtido com a redução do absenteísmo supera o investimento no programa.";
+        } else {
+          bannerRoi.className = "p-4 rounded-xl text-sm flex items-start gap-3 border transition-all bg-amber-50 border-amber-200 text-amber-900";
+          roiTitle.innerText = "Retorno Parcial do Investimento";
+          roiDesc.innerText = "A economia gerada pela redução do absenteísmo financia parte relevante da proposta SESI.";
+        }
 
         // Exibir dados operacionais (Horas Perdidas e Horas Recuperadas)
         document.getElementById('res-horas-perdidas').innerText = `${formatNum(horasPerdidasAno)} h/ano`;
         document.getElementById('res-horas-recuperadas').innerText = `${formatNum(horasRecuperadasAno)} h/ano`;
-
-        // Banner de Status do Investimento
-        const banner = document.getElementById('banner-roi');
-        const iconOk = document.getElementById('icon-roi-ok');
-        const iconAlert = document.getElementById('icon-roi-alert');
-        const titleRoi = document.getElementById('title-roi');
-        const descRoi = document.getElementById('desc-roi');
-
-        if (investimentoMensal > 0) {
-          const coberto = economiaAno >= investimentoAno;
-          const saldoResidualAno = Math.max(0, investimentoAno - economiaAno);
-          const saldoResidualMes = saldoResidualAno / 12;
-
-          if (coberto) {
-            banner.className = "p-4 rounded-xl text-sm flex items-start gap-3 border transition-all bg-emerald-50 border-emerald-200 text-emerald-900";
-            iconOk.classList.remove('hidden');
-            iconAlert.classList.add('hidden');
-            titleRoi.innerText = "A economia gerada supera a proposta SESI";
-            descRoi.innerText = "A economia gerada pela redução do absenteísmo supera o investimento no programa.";
-          } else {
-            banner.className = "p-4 rounded-xl text-sm flex items-start gap-3 border transition-all bg-amber-50 border-amber-200 text-amber-900";
-            iconOk.classList.add('hidden');
-            iconAlert.classList.remove('hidden');
-            titleRoi.innerText = "Retorno Parcial do Investimento";
-            descRoi.innerText = `A economia gerada cobre parte da proposta SESI. Saldo restante: ${formatBRL(saldoResidualAno)} / ano (${formatBRL(saldoResidualMes)} / mês).`;
-          }
-        } else {
-          banner.className = "p-4 rounded-xl text-sm flex items-start gap-3 border transition-all bg-emerald-50 border-emerald-200 text-emerald-900";
-          iconOk.classList.remove('hidden');
-          iconAlert.classList.add('hidden');
-          titleRoi.innerText = "A economia gerada supera a proposta SESI";
-          descRoi.innerText = "A economia gerada pela redução do absenteísmo supera o investimento no programa.";
-        }
 
         // Progresso Visual
         const pctReducao = Math.round(reducaoRate * 100);
