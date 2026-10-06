@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Impacto do Absenteísmo | SESI + Saúde</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            sesi: {
+              blue: '#0068B5',
+              purple: '#6C2D91',
+              green: '#2BA84A',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Estilização dos Sliders */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: transparent;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background: #0068B5;
+      cursor: pointer;
+      margin-top: -6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 8px;
+      cursor: pointer;
+      background: #E2E8F0;
+      border-radius: 999px;
+    }
+    .thumb-green::-webkit-slider-thumb {
+      background: #2BA84A !important;
+    }
+    .thumb-purple::-webkit-slider-thumb {
+      background: #6C2D91 !important;
+    }
+    .thumb-red::-webkit-slider-thumb {
+      background: #EF4444 !important;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen p-4 md:p-8">
+
+  <div class="max-w-6xl mx-auto space-y-6">
+
+    <!-- CABEÇALHO COM LOGO SESI + SAÚDE -->
+    <header class="bg-white border-b-4 border-sesi-blue rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 border border-slate-200/80">
+      <div class="flex items-center gap-4">
+        <!-- LOGO SESI + SAÚDE -->
+        <div class="flex items-center gap-2 select-none">
+          <span class="text-3xl font-extrabold italic tracking-tight text-sesi-blue">sesi</span>
+          <svg class="w-8 h-8 text-sesi-purple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span class="text-3xl font-bold italic tracking-tight text-sesi-green">saúde</span>
+        </div>
+        <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
+        <div>
+          <h1 class="text-lg md:text-xl font-bold text-slate-800 leading-tight">Simulador de Impacto do Absenteísmo</h1>
+          <p class="text-xs text-slate-500">Gestão de Produtividade e Análise Econômica</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 text-sesi-blue bg-blue-50/80 px-3.5 py-1.5 rounded-full text-xs font-semibold border border-blue-100">
+        <svg class="w-4 h-4 text-sesi-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+        <span>Soluções Corporativas SESI</span>
+      </div>
+    </header>
+
+    <!-- PAINEL PRINCIPAL -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- COLUNA DE PARÂMETROS -->
+      <div class="lg:col-span-6 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+        <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+            <svg class="w-4 h-4 text-sesi-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+            Parâmetros da Empresa
+          </h2>
+        </div>
+
+        <!-- 1. Colaboradores -->
+        <div class="space-y-2">
+          <label class="text-slate-700 text-sm font-semibold flex items-center gap-2">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            Número de Colaboradores
+          </label>
+          <div class="flex items-center gap-3">
+            <input id="range-colabs" type="range" min="10" max="10000" step="10" value="1000" class="w-full">
+            <input id="num-colabs" type="number" value="1000" class="w-28 text-right font-bold border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-sesi-blue outline-none">
+          </div>
+        </div>
+
+        <!-- 2. Salário Médio -->
+        <div class="space-y-2">
+          <label class="text-slate-700 text-sm font-semibold flex items-center gap-2">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Salário Médio Bruto (R$)
+          </label>
+          <div class="flex items-center gap-3">
+            <input id="range-salario" type="range" min="1000" max="30000" step="100" value="2988" class="w-full">
+            <input id="num-salario" type="number" value="2988" class="w-28 text-right font-bold border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-sesi-blue outline-none">
+          </div>
+          <p class="text-xs text-slate-400">Salário base. Aplica-se estimativa de +70% para encargos e benefícios.</p>
+        </div>
+
+        <!-- 3. Jornada Semanal -->
+        <div class="space-y-2">
+          <label class="text-slate-700 text-sm font-semibold flex items-center gap-2">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Jornada Semanal (Horas)
+          </label>
+          <div class="flex items-center gap-3">
+            <input id="range-jornada" type="range" min="10" max="60" step="1" value="40" class="w-full">
+            <input id="num-jornada" type="number" value="40" class="w-28 text-right font-bold border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-sesi-blue outline-none">
+          </div>
+          <p id="label-carga-mensal" class="text-xs text-sesi-blue font-medium">Carga mensal estimada: 200h/colaborador.</p>
+        </div>
+
+        <!-- 4. Taxa de Absenteísmo Atual -->
+        <div class="space-y-2">
+          <label class="text-slate-700 text-sm font-semibold flex items-center gap-2">
+            <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>
+            Taxa de Absenteísmo Atual (%)
+          </label>
+          <div class="flex items-center gap-3">
+            <input id="range-absent" type="range" min="0.5" max="20" step="0.1" value="5.0" class="w-full thumb-red">
+            <input id="num-absent" type="number" step="0.1" value="5.0" class="w-28 text-right font-bold border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-red-500 outline-none">
+          </div>
+        </div>
+
+        <!-- 5. Meta de Redução -->
+        <div class="space-y-2">
+          <label class="text-slate-700 text-sm font-semibold flex items-center gap-2">
+            <svg class="w-4 h-4 text-sesi-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Meta de Redução do Absenteísmo (%)
+          </label>
+          <div class="flex items-center gap-3">
+            <input id="range-reducao" type="range" min="5" max="50" step="1" value="15" class="w-full thumb-green">
+            <input id="num-reducao" type="number" value="15" class="w-28 text-right font-bold border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-sesi-green outline-none">
+          </div>
+        </div>
+
+        <!-- 6. INVESTIMENTO MENSAL ESCONDIDO (GAVETA EXPANDÍVEL) -->
+        <div class="pt-2 border-t border-slate-100">
+          <button id="toggle-investimento-btn" type="button" class="w-full flex items-center justify-between text-xs font-semibold text-slate-500 hover:text-sesi-purple py-2 px-3 bg-slate-50 rounded-lg border border-slate-200 transition-colors">
+            <span class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-sesi-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+              Configuração Interna: Investimento SESI
+            </span>
+            <span id="toggle-icon" class="text-sm font-bold text-slate-400">+</span>
+          </button>
+
+          <!-- CONTEÚDO OCULTO POR PADRÃO -->
+          <div id="wrapper-investimento" class="hidden mt-4 space-y-2 p-4 bg-purple-50/50 rounded-xl border border-purple-100">
+            <label class="text-slate-700 text-sm font-semibold flex items-center gap-2">
+              Investimento Mensal na Proposta SESI (R$)
+            </label>
+            <div class="flex items-center gap-3">
+              <input id="range-investimento" type="range" min="0" max="50000" step="500" value="0" class="w-full thumb-purple">
+              <input id="num-investimento" type="number" value="0" class="w-28 text-right font-bold border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:ring-2 focus:ring-sesi-purple outline-none">
+            </div>
+            <p class="text-xs text-slate-400">Insira o valor mensal contratado para comparar com a economia obtida.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- COLUNA DE RESULTADOS -->
+      <div class="lg:col-span-6 space-y-6">
+
+        <!-- CUSTO TOTAL DO ABSENTEÍSMO -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border-l-4 border-red-500 border-y border-r border-slate-200">
+          <span class="text-xs font-bold uppercase tracking-wider text-red-500 block mb-1">
+            Custo Estimado do Absenteísmo
+          </span>
+          <div id="res-custo-ano" class="text-3xl font-black text-red-600">
+            R$ 0
+          </div>
+          <div id="res-custo-detalhe" class="text-sm font-semibold text-slate-500 mt-1">
+            R$ 0 / ano (R$ 0 / mês)
+          </div>
+        </div>
+
+        <!-- ECONOMIA POTENCIAL GERADA -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border-l-4 border-sesi-green border-y border-r border-slate-200 space-y-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-sesi-green block mb-1">
+              Economia Potencial Com Soluções SESI
+            </span>
+            <div id="res-economia-ano" class="text-3xl font-black text-sesi-green">
+              R$ 0
+            </div>
+            <div id="res-economia-detalhe" class="text-sm font-semibold text-slate-500 mt-1">
+              R$ 0 / ano (R$ 0 / mês)
+            </div>
+          </div>
+
+          <!-- BANNER DE STATUS DO INVESTIMENTO -->
+          <div id="banner-roi" class="p-4 rounded-xl text-sm flex items-start gap-3 border transition-all bg-emerald-50 border-emerald-200 text-emerald-900">
+            <svg id="icon-roi-ok" class="w-5 h-5 text-sesi-green shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <svg id="icon-roi-alert" class="w-5 h-5 text-amber-500 shrink-0 mt-0.5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            <div>
+              <span id="title-roi" class="font-bold block text-slate-800">A economia gerada supera a proposta SESI</span>
+              <p id="desc-roi" class="text-xs mt-0.5 text-slate-600">A economia gerada pela redução do absenteísmo supera o investimento no programa.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- INDICADORES OPERACIONAIS -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Horas de Trabalho & Capacidade Operacional
+          </h3>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+              <span class="text-xs text-slate-500 block font-medium">Horas Perdidas</span>
+              <span id="res-horas-perdidas" class="text-base font-bold text-red-600">0 h/ano</span>
+            </div>
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+              <span class="text-xs text-slate-500 block font-medium">Horas Recuperadas</span>
+              <span id="res-horas-recuperadas" class="text-base font-bold text-sesi-green">0 h/ano</span>
+            </div>
+          </div>
+
+          <!-- BARRA DE PROGRESSO VISUAL DA META -->
+          <div class="pt-2 space-y-1.5">
+            <div class="flex justify-between text-xs font-semibold text-slate-600">
+              <span>Eficiência de Redução</span>
+              <span id="progress-text">15% Recuperado</span>
+            </div>
+            <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden flex">
+              <div id="progress-bar-green" class="bg-sesi-green h-full transition-all duration-300" style="width: 15%;"></div>
+              <div id="progress-bar-red" class="bg-red-400 h-full transition-all duration-300" style="width: 85%;"></div>
+            </div>
+          </div>
+
+          <!-- BOTÃO COMO FORAM FEITOS OS CÁLCULOS -->
+          <div class="pt-2">
+            <button id="btn-open-modal" type="button" class="w-full flex items-center justify-center gap-2 text-xs font-bold text-sesi-blue bg-blue-50 hover:bg-blue-100 border border-blue-200 py-2.5 px-4 rounded-xl transition-all">
+              <svg class="w-4 h-4 text-sesi-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <span>Como foram feitos os cálculos?</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RODAPÉ INSTITUCIONAL -->
+    <footer class="text-center text-xs text-slate-400 pt-4 border-t border-slate-200/60">
+      SESI - Serviço Social da Indústria | Soluções em Gestão da Saúde e Segurança no Trabalho.
+    </footer>
+
+  </div>
+
+  <!-- MODAL MEMÓRIA DE CÁLCULO -->
+  <div id="modal-calculo" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-5 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+          <svg class="w-5 h-5 text-sesi-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+          Memória de Cálculo
+        </h3>
+        <button id="btn-close-modal" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs text-slate-600 leading-relaxed">
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+          <span class="font-bold text-slate-800 block">1. Carga Horária Efetiva</span>
+          <p>Calculada considerando a jornada semanal informada × 5 semanas × 12 meses × nº de colaboradores.</p>
+        </div>
+
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+          <span class="font-bold text-slate-800 block">2. Custo da Hora do Colaborador</span>
+          <p>Baseia-se no Salário Bruto acrescido de <strong>70% referentes a encargos trabalhistas, previdenciários e benefícios</strong> (Fator 1,70), dividido pela carga horária mensal contratada.</p>
+        </div>
+
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+          <span class="font-bold text-slate-800 block">3. Custo Total do Absenteísmo</span>
+          <p>Multiplicação das horas não trabalhadas (Capacidade Total × Taxa de Absenteísmo) pelo Custo da Hora Trabalhada.</p>
+        </div>
+
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+          <span class="font-bold text-slate-800 block">4. Economia Estimada com Soluções SESI</span>
+          <p>Aplica-se a porcentagem da Meta de Redução escolhida sobre o custo total das perdas calculadas no passo anterior.</p>
+        </div>
+      </div>
+
+      <div class="pt-2 border-t border-slate-100 text-right">
+        <button id="btn-close-modal-footer" class="px-4 py-2 bg-sesi-blue text-white font-bold text-xs rounded-xl hover:bg-blue-700 transition-colors">
+          Entendi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT DE CÁLCULO -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+      // Toggle para mostrar/esconder o Investimento
+      const toggleBtn = document.getElementById('toggle-investimento-btn');
+      const wrapperInv = document.getElementById('wrapper-investimento');
+      const toggleIcon = document.getElementById('toggle-icon');
+
+      toggleBtn.addEventListener('click', function() {
+        if (wrapperInv.classList.contains('hidden')) {
+          wrapperInv.classList.remove('hidden');
+          toggleIcon.innerText = '-';
+        } else {
+          wrapperInv.classList.add('hidden');
+          toggleIcon.innerText = '+';
+        }
+      });
+
+      // Controles do Modal de Memória de Cálculo
+      const modal = document.getElementById('modal-calculo');
+      const openModalBtn = document.getElementById('btn-open-modal');
+      const closeModalBtn = document.getElementById('btn-close-modal');
+      const closeModalFooter = document.getElementById('btn-close-modal-footer');
+
+      openModalBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+      closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
+      closeModalFooter.addEventListener('click', () => modal.classList.add('hidden'));
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.add('hidden');
+      });
+
+      // Mapeamento dos pares de Slider e Input
+      const pairs = [
+        { slider: 'range-colabs', input: 'num-colabs' },
+        { slider: 'range-salario', input: 'num-salario' },
+        { slider: 'range-jornada', input: 'num-jornada' },
+        { slider: 'range-absent', input: 'num-absent' },
+        { slider: 'range-reducao', input: 'num-reducao' },
+        { slider: 'range-investimento', input: 'num-investimento' }
+      ];
+
+      // Sincronização Slider e Input
+      pairs.forEach(pair => {
+        const sliderEl = document.getElementById(pair.slider);
+        const inputEl = document.getElementById(pair.input);
+
+        if (sliderEl && inputEl) {
+          sliderEl.addEventListener('input', function () {
+            inputEl.value = sliderEl.value;
+            calcular();
+          });
+
+          inputEl.addEventListener('input', function () {
+            sliderEl.value = inputEl.value;
+            calcular();
+          });
+        }
+      });
+
+      // Funções auxiliares de formatação
+      function formatBRL(value) {
+        return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+      }
+
+      function formatNum(value) {
+        return value.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+      }
+
+      // Função Principal de Cálculo
+      function calcular() {
+        const colabs = Math.max(0, parseFloat(document.getElementById('num-colabs').value) || 0);
+        const salario = Math.max(0, parseFloat(document.getElementById('num-salario').value) || 0);
+        const jornadaSemanal = Math.max(1, parseFloat(document.getElementById('num-jornada').value) || 0);
+        const absentRate = (Math.max(0, parseFloat(document.getElementById('num-absent').value) || 0)) / 100;
+        const reducaoRate = (Math.max(0, parseFloat(document.getElementById('num-reducao').value) || 0)) / 100;
+        const investimentoMensal = Math.max(0, parseFloat(document.getElementById('num-investimento').value) || 0);
+        const investimentoAno = investimentoMensal * 12;
+
+        // Horas e Capacidade
+        const cargaMensal = jornadaSemanal * 5;
+        document.getElementById('label-carga-mensal').innerText = `Carga mensal estimada: ${cargaMensal}h/colaborador.`;
+
+        const horasAnoColab = cargaMensal * 12;
+        const capacidadeTotalAno = colabs * horasAnoColab;
+
+        // Custo por hora (+70% encargos e benefícios)
+        const custoHora = cargaMensal > 0 ? (salario * 1.70) / cargaMensal : 0;
+
+        // Perdas
+        const horasPerdidasAno = capacidadeTotalAno * absentRate;
+        const custoPerdaAno = horasPerdidasAno * custoHora;
+        const custoPerdaMes = custoPerdaAno / 12;
+
+        // Economia Recuperada
+        const horasRecuperadasAno = horasPerdidasAno * reducaoRate;
+        const economiaAno = horasRecuperadasAno * custoHora;
+        const economiaMes = economiaAno / 12;
+
+        // Exibir resultados financeiros no DOM
+        document.getElementById('res-custo-ano').innerText = formatBRL(custoPerdaAno);
+        document.getElementById('res-custo-detalhe').innerText = `${formatBRL(custoPerdaAno)} / ano (${formatBRL(custoPerdaMes)} / mês)`;
+
+        document.getElementById('res-economia-ano').innerText = formatBRL(economiaAno);
+        document.getElementById('res-economia-detalhe').innerText = `${formatBRL(economiaAno)} / ano (${formatBRL(economiaMes)} / mês)`;
+
+        // Exibir dados operacionais (Horas Perdidas e Horas Recuperadas)
+        document.getElementById('res-horas-perdidas').innerText = `${formatNum(horasPerdidasAno)} h/ano`;
+        document.getElementById('res-horas-recuperadas').innerText = `${formatNum(horasRecuperadasAno)} h/ano`;
+
+        // Banner de Status do Investimento
+        const banner = document.getElementById('banner-roi');
+        const iconOk = document.getElementById('icon-roi-ok');
+        const iconAlert = document.getElementById('icon-roi-alert');
+        const titleRoi = document.getElementById('title-roi');
+        const descRoi = document.getElementById('desc-roi');
+
+        if (investimentoMensal > 0) {
+          const coberto = economiaAno >= investimentoAno;
+          const saldoResidualAno = Math.max(0, investimentoAno - economiaAno);
+          const saldoResidualMes = saldoResidualAno / 12;
+
+          if (coberto) {
+            banner.className = "p-4 rounded-xl text-sm flex items-start gap-3 border transition-all bg-emerald-50 border-emerald-200 text-emerald-900";
+            iconOk.classList.remove('hidden');
+            iconAlert.classList.add('hidden');
+            titleRoi.innerText = "A economia gerada supera a proposta SESI";
+            descRoi.innerText = "A economia gerada pela redução do absenteísmo supera o investimento no programa.";
+          } else {
+            banner.className = "p-4 rounded-xl text-sm flex items-start gap-3 border transition-all bg-amber-50 border-amber-200 text-amber-900";
+            iconOk.classList.add('hidden');
+            iconAlert.classList.remove('hidden');
+            titleRoi.innerText = "Retorno Parcial do Investimento";
+            descRoi.innerText = `A economia gerada cobre parte da proposta SESI. Saldo restante: ${formatBRL(saldoResidualAno)} / ano (${formatBRL(saldoResidualMes)} / mês).`;
+          }
+        } else {
+          banner.className = "p-4 rounded-xl text-sm flex items-start gap-3 border transition-all bg-emerald-50 border-emerald-200 text-emerald-900";
+          iconOk.classList.remove('hidden');
+          iconAlert.classList.add('hidden');
+          titleRoi.innerText = "A economia gerada supera a proposta SESI";
+          descRoi.innerText = "A economia gerada pela redução do absenteísmo supera o investimento no programa.";
+        }
+
+        // Progresso Visual
+        const pctReducao = Math.round(reducaoRate * 100);
+        document.getElementById('progress-text').innerText = `${pctReducao}% Reduzido`;
+        document.getElementById('progress-bar-green').style.width = `${pctReducao}%`;
+        document.getElementById('progress-bar-red').style.width = `${100 - pctReducao}%`;
+      }
+
+      // Cálculo inicial imediato ao carregar
+      calcular();
+    });
+  </script>
+</body>
+</html>
