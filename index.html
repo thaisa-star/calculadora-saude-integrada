@@ -136,7 +136,7 @@
             <input id="range-jornada" type="range" min="10" max="60" step="1" value="40" class="w-full">
             <input id="num-jornada" type="number" value="40" class="w-28 text-right font-bold border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-sesi-blue outline-none">
           </div>
-          <p id="label-carga-mensal" class="text-xs text-sesi-blue font-medium">Carga mensal estimada: 200h/colaborador.</p>
+          <p id="label-carga-mensal" class="text-xs text-sesi-blue font-medium">Carga mensal estimada: 173,3h/colaborador.</p>
         </div>
 
         <!-- 4. Taxa de Absenteísmo Atual -->
@@ -281,7 +281,7 @@
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-5 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-          <svg class="w-5 h-5 text-sesi-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+          <svg class="w-5 h-5 text-sesi-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
           Memória de Cálculo
         </h3>
         <button id="btn-close-modal" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100">
@@ -292,22 +292,22 @@
       <div class="space-y-4 text-xs text-slate-600 leading-relaxed">
         <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
           <span class="font-bold text-slate-800 block">1. Carga Horária Efetiva</span>
-          <p>Calculada considerando a jornada semanal informada × 5 semanas × 12 meses × nº de colaboradores.</p>
+          <p>Calculada considerando a jornada semanal informada × 52 semanas × nº de colaboradores.</p>
         </div>
 
         <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
           <span class="font-bold text-slate-800 block">2. Custo da Hora do Colaborador</span>
-          <p>Baseia-se no Salário Bruto acrescido de <strong>70% referentes a encargos trabalhistas, previdenciários e benefícios</strong> (Fator 1,70), dividido pela carga horária mensal contratada.</p>
+          <p>Baseia-se no Salário Bruto acrescido de 70% referentes a encargos trabalhistas, previdenciários e benefícios (fator 1,70 estimado), dividido pela carga horária mensal contratada (jornada semanal × 52 ÷ 12).</p>
         </div>
 
         <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
           <span class="font-bold text-slate-800 block">3. Custo Total do Absenteísmo</span>
-          <p>Multiplicação das horas não trabalhadas (Capacidade Total × Taxa de Absenteísmo) pelo Custo da Hora Trabalhada.</p>
+          <p>Horas não trabalhadas = Carga Horária Efetiva × Taxa de Absenteísmo. Taxa de Absenteísmo = horas perdidas (faltas, atrasos e saídas antecipadas convertidos em horas) ÷ horas previstas × 100. O custo total é o resultado multiplicado pelo Custo da Hora do Colaborador.</p>
         </div>
 
         <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
           <span class="font-bold text-slate-800 block">4. Economia Estimada com Soluções SESI</span>
-          <p>Aplica-se a porcentagem da Meta de Redução escolhida sobre o custo total das perdas calculadas no passo anterior.</p>
+          <p>Aplica-se a porcentagem da Meta de Redução escolhida sobre o custo direto estimado do absenteísmo calculado no passo anterior. Não inclui custos indiretos, como substituições, horas extras e perda de produtividade.</p>
         </div>
       </div>
 
@@ -322,6 +322,9 @@
   <!-- SCRIPT DE CÁLCULO -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+
+      // Constante nomeada de encargos
+      const FATOR_ENCARGOS = 1.70;
 
       // Toggle para mostrar/esconder o Investimento
       const toggleBtn = document.getElementById('toggle-investimento-btn');
@@ -399,15 +402,15 @@
         const investimentoMes = Math.max(0, parseFloat(document.getElementById('num-investimento').value) || 0);
         const investimentoAno = investimentoMes * 12;
 
-        // Horas e Capacidade
-        const cargaMensal = jornadaSemanal * 5;
-        document.getElementById('label-carga-mensal').innerText = `Carga mensal estimada: ${cargaMensal}h/colaborador.`;
+        // Carga Horária Mensal e Anual ajustadas para a base real de 52 semanas
+        const cargaMensal = (jornadaSemanal * 52) / 12;
+        const cargaMensalFmt = cargaMensal.toLocaleString('pt-BR', { maximumFractionDigits: 1 });
+        document.getElementById('label-carga-mensal').innerText = `Carga mensal estimada: ${cargaMensalFmt}h/colaborador.`;
 
-        const horasAnoColab = cargaMensal * 12;
-        const capacidadeTotalAno = colabs * horasAnoColab;
+        const capacidadeTotalAno = colabs * jornadaSemanal * 52;
 
-        // Custo por hora (+70% encargos e benefícios)
-        const custoHora = cargaMensal > 0 ? (salario * 1.70) / cargaMensal : 0;
+        // Custo por hora com FATOR_ENCARGOS (1.70)
+        const custoHora = cargaMensal > 0 ? (salario * FATOR_ENCARGOS) / cargaMensal : 0;
 
         // Perdas
         const horasPerdidasAno = capacidadeTotalAno * absentRate;
@@ -426,7 +429,7 @@
         document.getElementById('res-economia-ano').innerText = `${formatBRL(economiaAno)} / ano`;
         document.getElementById('res-economia-detalhe').innerText = `Equivalente a ${formatBRL(economiaMes)} / mês`;
 
-        // LÓGICA DO BANNER DE RETORNO DO INVESTIMENTO (SEM MENCIONAR SALDO RESTANTE)
+        // LÓGICA DO BANNER DE RETORNO DO INVESTIMENTO
         const bannerRoi = document.getElementById('banner-roi');
         const roiTitle = document.getElementById('roi-title');
         const roiDesc = document.getElementById('roi-desc');
